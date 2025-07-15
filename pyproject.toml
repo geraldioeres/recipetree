@@ -14,6 +14,11 @@ classifiers = [
 license = "MIT"
 license-files = ["LICEN[CS]E*"]
 
+dependencies = [
+    "rasterstats>=0.17.0",
+    "detectree2 @ git+https://github.com/geraldioeres/detectree2.git",
+]
+
 [project.urls]
 Homepage = "https://github.com/geraldioeres/recipetree"
 Issues = "https://github.com/geraldioeres/recipetree/issues"
