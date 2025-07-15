@@ -4,9 +4,10 @@ import geopandas as gpd
 from rasterstats import zonal_stats
 import numpy as np
 
-def crown_zonalstats(crown_path, chm_path, clean=True):
+
+def crown_zonalstats(crown_path, chm_path, zonal_fname="zonal_cleaned", clean=True):
     """
-    Perform zonal statistics on crown and the input CHM
+    Perform zonal statistic on crown and the input CHM
 
     Args:
         crown_path (str or geoDataFrame): crown file path or crown geoDataFrame
@@ -27,31 +28,49 @@ def crown_zonalstats(crown_path, chm_path, clean=True):
     mod_in_crown["th_std"] = 0.00
     mod_in_crown["category"] = ""
 
+
     for c_id, crown_poly in enumerate(crown_list):
         zstat_data = zonal_stats(crown_poly, chm_path, stats="max median std")
         tree_height = zstat_data[0]["max"]
         th_median = zstat_data[0]["median"]
         th_std = zstat_data[0]["std"]
+        
+        if tree_height == None:
+            tree_height = 0
+        if th_median == None:
+            th_median = 0
+        if th_std == None:
+            th_std = 0
+
         mod_in_crown.loc[c_id, "height"] = tree_height
         mod_in_crown.loc[c_id, "th_median"] = th_median
         mod_in_crown.loc[c_id, "th_std"] = th_std
-        
+
         if tree_height <= 0:
             mod_in_crown.loc[c_id, "category"] = "Not Tree"
-        elif height > 0 and (th_median < 2 or th_std < 2):
+        if th_median < 2:
             mod_in_crown.loc[c_id, "category"] = "Not Tree"
         else:
             mod_in_crown.loc[c_id, "category"] = "Tree"
+        # mod_in_crown.loc[c_id, "height"] = tree_height
+        # mod_in_crown.loc[c_id, "th_median"] = th_median
+        # mod_in_crown.loc[c_id, "th_std"] = th_std
+
+        # if tree_height <= 0:
+        #     mod_in_crown.loc[c_id, "category"] = "Not Tree"
+        # elif tree_height > 0 and (th_median < 2 or th_std < 2):
+        #     mod_in_crown.loc[c_id, "category"] = "Not Tree"
+        # else:
+        #     mod_in_crown.loc[c_id, "category"] = "Tree"
 
     if clean:
         mod_in_crown = mod_in_crown[mod_in_crown["category"] == "Not Tree"]
 
-    mod_in_crown.to_file("zonal_cleaned" + ".gpkg")
+    mod_in_crown.to_file(zonal_fname + ".gpkg")
 
     print("Crown has ben cleaned.")
 
     return mod_in_crown
-
 
 
 def process_chm(dsm_path, dtm_path):
