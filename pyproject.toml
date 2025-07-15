@@ -15,8 +15,11 @@ license = "MIT"
 license-files = ["LICEN[CS]E*"]
 
 dependencies = [
-    "rasterstats>=0.17.0",
+    "geopandas",
+    "rasterstats",
     "detectree2 @ git+https://github.com/geraldioeres/detectree2.git",
+    "shapely",
+    "rasterio",
 ]
 
 [project.urls]
