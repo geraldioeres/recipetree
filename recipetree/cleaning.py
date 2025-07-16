@@ -64,7 +64,7 @@ def crown_zonalstats(crown_path, chm_path, zonal_fname="zonal_cleaned", clean=Tr
         #     mod_in_crown.loc[c_id, "category"] = "Tree"
 
     if clean:
-        mod_in_crown = mod_in_crown[mod_in_crown["category"] == "Not Tree"]
+        mod_in_crown = mod_in_crown[mod_in_crown["category"] == "Tree"]
 
     mod_in_crown.to_file(zonal_fname + ".gpkg")
 
