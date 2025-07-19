@@ -4,6 +4,38 @@ from rasterstats import zonal_stats
 import rasterio as rio
 import numpy as np
 
+def rasterSize(dsm_path, nodata=None):
+    """
+    Function to calculate the size of the forest raster area.
+
+    Args:
+        dsm_path (String): path of the DSM
+        nodata (int): nodata value (optional)
+
+    Returns:
+        raster_area (float): size of the forest raster area
+    """
+
+    with rio.open(dsm_path) as src:
+        width = src.width
+        height = src.height
+        transform = src.transform
+        
+        pixel_width = transform.a
+        pixel_height = -transform.e
+        pixel_area = abs(pixel_width * pixel_height)
+        
+        data = src.read(1)
+        
+        if nodata is None:
+            nodata = src.nodata
+        
+        total_valid_pixel = np.count_nonzero(data != nodata)
+        raster_area = total_valid_pixel * pixel_area
+        
+        return raster_area
+
+
 def dbh_estimation(pred_poly):
     """
     Function to estimate tree DBH based on the crown diameter (cm).
@@ -50,7 +82,7 @@ def tree_height_zstats(pred_poly, chm_path):
 def above_ground_biomass_est(dbh_est, height_est):
     """
     Estimate the AGB (Above Ground Biomass) based on estimated DBH and height
-    Allometric using [Qin, 2021]
+    allometry using [Qin, 2021]
 
     Args:
         dbh_est (float): estimated tree DBH in cm

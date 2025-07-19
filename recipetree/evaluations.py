@@ -52,18 +52,18 @@ def calculate_iou(prediction, ground_truth):
 
 def prediction_evaluation2(prediction, ground_truth, prcat_path, gtcat_path, iou_threshold=0.5):
     """
-    Compare prediction results and ground truth polygons and returns ocnfussion matrix values.
-    It aslo creates a new column for the category of the polygon for the visualization purpose.
+    Compare prediction results and ground truth polygons and returns confusion matrix values.
+    It also creates a new column for the category of the polygon for the visualization purpose.
 
     Args:
         prediction (GeoDataFrame): predicted polygons.
         ground_truth (GeoDataFrame): ground truth polygons.
         prcat_path (String): categorized prediction shapefile output filename and path
-        gtcat_path (String): categorized grount truth shapefile output filename and path
+        gtcat_path (String): categorized ground truth shapefile output filename and path
         iou_threshold (float): IoU threshold to consider a match (default = 0.5).
 
     Returns:
-        tuple: confussion matrix values (TP, FP, FN).
+        tuple: confusion matrix values (TP, FP, FN).
     """
     # Convert prediction CRS to ground truth CRS
     if prediction.crs != ground_truth.crs:
@@ -148,15 +148,14 @@ def prediction_evaluation2(prediction, ground_truth, prcat_path, gtcat_path, iou
 
     return true_positives, false_positives, false_negatives
 
-def over_under(prediction, ground_truth, iou_threshold=0.5, ovud_iou_th=0.1):
+def over_under(prediction, ground_truth, ovud_iou_th=0.1):
     """
-    Check occurence of oversegmentation and undersegmentation of the ground truth polygons.
+    Check occurrence of oversegmentation and undersegmentation of the ground truth polygons.
     Creates a new column for the category of the polygon for visualization purpose.
 
     Args:
         prediction (GeoDataFrame): predicted polygons.
         ground_truth (GeoDataFrame): ground truth polygons.
-        iou_threshold (float): IoU threshold to consider a match (default = 0.5).
         ovud_iou_th (float): IoU threshold to consider a oversegmentation or undersegmentation (default = 0.1).
 
     Returns:
